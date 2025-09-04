@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotatify</title>
+    <link rel="icon" href="https://www.spotify.com/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=The+Nautigal:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="script.js"></script>
+
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">home</a>
+        <a href="playlists.html" style="color: #a05aeb">my playlists</a>
+    </nav>
+
+    <button class="view_playlists" style="font-size: 20px;;">My Playlists</button>
+    <div id="playlist_links" style="display:none;"> </div>
+
+    <br><br><br><br>
+
+    <div id="player"></div> <br><br>
+    <div id="playlist"> </div>
+
+    <script>
+        // Replace the existing DOMContentLoaded event listener in your playlists.html with this updated version:
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display playlist if playlistId is in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const playlistId = urlParams.get('playlistId');
+            if (playlistId) {
+                displayPlaylist(playlistId);
+            }
+
+            // Load playlists initially
+            loadPlaylistDropdown();
+        });
+
+        // Function to load and refresh the playlist dropdown
+        async function loadPlaylistDropdown() {
+            const playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+            const playlistLinksDiv = document.getElementById('playlist_links');
+
+            // Clear existing content
+            playlistLinksDiv.innerHTML = '';
+
+            // Fetch updated playlist info for each saved playlist
+            for (const playlist of playlists) {
+                try {
+                    // Fetch the latest playlist information from Spotify
+                    const updatedPlaylist = await fetchWebApi(`v1/playlists/${playlist.id}`);
+
+                    const playlistItem = document.createElement('div');
+                    playlistItem.classList.add("playlist_item");
+
+                    const playlistLink = document.createElement('a');
+                    playlistLink.href = `playlists.html?playlistId=${playlist.id}`;
+                    // Use the updated name from Spotify API
+                    playlistLink.textContent = updatedPlaylist.name;
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.classList.add('delete_btn');
+                    deleteButton.onclick = () => {
+                        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+                        playlists = playlists.filter(p => p.id !== playlist.id);
+                        localStorage.setItem('playlists', JSON.stringify(playlists));
+                        playlistItem.remove();
+                    };
+
+                    playlistItem.appendChild(playlistLink);
+                    playlistItem.appendChild(deleteButton);
+                    playlistLinksDiv.appendChild(playlistItem);
+
+                    // Update the stored playlist with the latest info
+                    updateStoredPlaylist(playlist.id, updatedPlaylist);
+
+                } catch (error) {
+                    console.error(`Error fetching playlist ${playlist.id}:`, error);
+
+                    // If API call fails, fall back to stored data
+                    const playlistItem = document.createElement('div');
+                    playlistItem.classList.add("playlist_item");
+
+                    const playlistLink = document.createElement('a');
+                    playlistLink.href = `playlists.html?playlistId=${playlist.id}`;
+                    playlistLink.textContent = playlist.name + ' (offline)';
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.classList.add('delete_btn');
+                    deleteButton.onclick = () => {
+                        let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+                        playlists = playlists.filter(p => p.id !== playlist.id);
+                        localStorage.setItem('playlists', JSON.stringify(playlists));
+                        playlistItem.remove();
+                    };
+
+                    playlistItem.appendChild(playlistLink);
+                    playlistItem.appendChild(deleteButton);
+                    playlistLinksDiv.appendChild(playlistItem);
+                }
+            }
+        }
+
+        // Function to update a specific playlist in localStorage
+        function updateStoredPlaylist(playlistId, updatedPlaylist) {
+            let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+            const index = playlists.findIndex(p => p.id === playlistId);
+
+            if (index !== -1) {
+                playlists[index] = updatedPlaylist;
+                localStorage.setItem('playlists', JSON.stringify(playlists));
+            }
+        }
+
+        // Update the dropdown click handler to refresh data when opened
+        $('.view_playlists').on('click', function () {
+            const playlistLinks = $('#playlist_links');
+
+            if (playlistLinks.is(':visible')) {
+                // If dropdown is visible, just hide it
+                playlistLinks.hide();
+            } else {
+                // If dropdown is hidden, refresh the data and show it
+                loadPlaylistDropdown().then(() => {
+                    playlistLinks.show();
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>

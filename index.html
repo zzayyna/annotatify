@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annotatify</title>
+  <link rel="icon" href="https://www.spotify.com/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=The+Nautigal:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+  <script defer src="script.js"></script>
+
+
+</head>
+
+<body>
+  <nav>
+    <a href="index.html" style="color: #a05aeb">home</a>
+    <a href="playlists.html">my playlists</a>
+  </nav>
+
+  <div class="homeIntro">
+    <h1>Annotatify</h1>
+    <p>Add annotations to the songs in your playlist! <br> Import an already existing playlist, or create a new one.
+      <br>View and annotate in the "my playlists" tab. <br> You can edit playlists themselves directly in spotify, and
+      come here for your annotations! <br> Everything is saved on your device. <br>Have fun!
+    </p>
+  </div>
+
+  </center><button id="start">Connect Your Spotify</button></center>
+
+  </center>
+  <div class="two_btns"><button id="import">Import Playlist</button> <br><br><button id="create">Create New
+      Playlist</button> </div>
+  </center>
+
+  <div id="playlistUrl">
+    <input type="text">
+    <button id="playlistGo">Go</button>
+  </div>
+
+  <div id="searchOption">
+    <input type="text" id="query" placeholder="Search for a track"> <button id="search">Search</button>
+
+    <div id="displayTracks"> </div>
+    <br><br>
+    <button id="exportP">Create Playlist</button><br><br>
+
+    <div id="tempPlaylist"></div>
+
+  </div>
+
+
+
+
+</body>
+
+</html>
