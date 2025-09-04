@@ -1,7 +1,7 @@
 // S E T U P 
 
 const clientId = 'f2aaaf55912942a185df5d4d7f42e78a';
-const redirectUri = 'http://localhost:1010';
+const redirectUri = 'https://zzayyyna.github.io/annotatify.github.io/';
 const scopes = 'playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative';
 
 
@@ -452,6 +452,7 @@ async function displayPlaylist(playlistId) {
     ></iframe>
     `;
 }
+
 
 
 
